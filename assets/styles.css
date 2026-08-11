@@ -303,83 +303,99 @@ a { color: inherit; }
    no se identifica a ningún niño. Ver README antes de cambiarlas.
    ============================================================ */
 
-/* Las fotos van a sangre (pegadas al borde de la pantalla), no dentro
-   de una tarjeta: media pantalla en escritorio, una franja arriba en
-   mobile. En los dos casos el borde interno se funde con el fondo de
-   la sección mediante un degradado, para que no quede un corte duro.
-   `--section-bg` existe para que ese degradado sepa con qué color
-   fundirse, que cambia según la sección. */
+/* ============================================================
+   Fotos
 
-.split { display: grid; }
+   Dos tratamientos, alternados a lo largo de la página para que no
+   se vuelva repetitivo:
+
+     .q--split  la foto ocupa un lateral, a sangre y con corte limpio.
+                El ancho lo define `--photo-col` por sección.
+     .q--bg     la foto ocupa el fondo completo, con un velo azul
+                encima y el texto en claro.
+
+   Todas las imágenes son de espaldas, cenitales o a distancia: no se
+   identifica a ningún niño. Ver README antes de cambiarlas.
+   ============================================================ */
+
+.split {
+  display: grid;
+  /* El orden de las columnas se define con variables y no con una
+     regla aparte: `.q--split .q__inner` tiene más especificidad que
+     `.split--reverse`, así que una regla suelta perdía el pulso y la
+     foto terminaba en la columna ancha. */
+  --col-a: 1fr;
+  --col-b: var(--photo-col, 40%);
+}
+.split--reverse {
+  --col-a: var(--photo-col, 40%);
+  --col-b: 1fr;
+}
 
 .photo {
-  position: relative;
   margin: 0;
   overflow: hidden;
   background: color-mix(in srgb, var(--ink) 8%, transparent);
 }
-.photo img {
+.photo img,
+.q__bg {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-/* Encuadre por foto. Son verticales y al recortarlas en una franja
-   apaisada (mobile) el centro geométrico no siempre es el motivo:
-   en varias, los chicos están en la mitad de abajo y con el recorte
-   por defecto quedaba solo cielo. */
+/* Encuadre por foto. Son verticales y al recortarlas (en franja
+   apaisada en mobile, en columna angosta en escritorio) el centro
+   geométrico no siempre es el motivo: en varias, los chicos están
+   en la mitad de abajo y por defecto quedaba solo cielo. */
 #quienes .photo img { object-position: center 80%; }
-#q1  .photo img { object-position: center 64%; }
-#q2  .photo img { object-position: center 45%; }
-#q4  .photo img { object-position: center 45%; }
-#q5  .photo img { object-position: center 42%; }
-#q9  .photo img { object-position: center 50%; }
-#q10 .photo img { object-position: center 68%; }
-/* El degradado que disuelve la unión foto/fondo. */
-.photo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
+#q1  .q__bg         { object-position: center 62%; }
+#q2  .photo img     { object-position: center 45%; }
+#q4  .photo img     { object-position: center 45%; }
+#q5  .q__bg         { object-position: center 45%; }
+#q9  .photo img     { object-position: center 50%; }
+#q10 .photo img     { object-position: center 68%; }
 
-/* --- Mobile: franja a sangre arriba, texto debajo --- */
+/* ---------- Variante A: foto en un lateral ---------- */
+
+/* Ancho de la columna de foto, distinto en cada sección. */
+#quienes .split { --photo-col: 42%; }
+#q2      .split { --photo-col: 34%; }
+#q4      .split { --photo-col: 46%; }
+#q9      .split { --photo-col: 32%; }
+#q10     .split { --photo-col: 40%; }
+
 @media (max-width: 59.999rem) {
-  .q.q--photo, .who.who--photo { padding-top: 0; }
+  .q.q--split, .who.who--split { padding-top: 0; }
 
   .split { gap: 2rem; }
   .split > .photo {
     order: -1;
-    height: 42svh;
-    min-height: 15rem;
+    height: 38svh;
+    min-height: 13rem;
     margin-inline: calc(var(--pad) * -1);
-  }
-  .split > .photo::after {
-    background: linear-gradient(to bottom, transparent 45%, var(--section-bg) 100%);
   }
 }
 
-/* --- Escritorio: media pantalla --- */
 @media (min-width: 60rem) {
-  .q.q--photo, .who.who--photo {
+  .q.q--split, .who.who--split {
     padding-inline: 0;
     padding-block: 0;
     min-height: 100svh;
     /* `.q` centra su contenido; acá el grid tiene que estirarse hasta
-       los bordes de la sección o la foto no llega arriba ni abajo. */
+       los bordes o la foto no llega arriba ni abajo. */
     align-items: stretch;
   }
-  .q--photo .q__inner,
-  .who--photo .who__inner {
+  .q--split .q__inner,
+  .who--split .who__inner {
     max-width: none;
-    grid-template-columns: 1fr 1fr;
-    align-items: stretch;
     min-height: 100svh;
+    grid-template-columns: var(--col-a) var(--col-b);
+    align-items: stretch;
   }
 
-  /* La columna de texto: centrada verticalmente y con un ancho de
-     lectura cómodo, pegada al centro de la pantalla. */
+  /* Columna de texto: centrada vertical y con ancho de lectura. */
   .split > :not(.photo) {
     align-self: center;
     max-width: 40rem;
@@ -389,17 +405,48 @@ a { color: inherit; }
   .split--reverse > :not(.photo) { margin-left: 0; margin-right: auto; }
 
   .split > .photo { height: 100%; }
-  .split > .photo::after {
-    background: linear-gradient(to right, var(--section-bg) 0%, transparent 26%);
-  }
-  /* Con la foto a la izquierda el degradado va del otro lado. */
   .split--reverse > .photo { order: -1; }
-  .split--reverse > .photo::after {
-    background: linear-gradient(to left, var(--section-bg) 0%, transparent 26%);
-  }
 
   /* En la columna angosta, 4 ítems entran mejor en 2×2 que en 3+1. */
-  .q--photo .q__steps { grid-template-columns: repeat(2, 1fr); }
+  .q--split .q__steps { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---------- Variante B: foto de fondo con velo ---------- */
+
+.q--bg {
+  position: relative;
+  overflow: hidden;
+  color: var(--cream);
+  --section-bg: var(--ink);
+}
+/* El apilado es explícito: un pseudo-elemento ::before se pinta antes
+   que los hijos del elemento, así que sin z-index la foto tapaba el
+   velo en vez de quedar debajo. */
+.q--bg .q__bg  { position: absolute; inset: 0; z-index: 0; }
+.q--bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: color-mix(in srgb, var(--ink) 86%, transparent);
+}
+.q--bg .q__inner { position: relative; z-index: 2; }
+
+.q--bg .q__num   { color: var(--amber); }
+.q--bg .q__title { color: var(--cream); }
+.q--bg .q__lead  {
+  color: var(--cream);
+  border-left-color: var(--amber);
+}
+.q--bg .q__body  { color: color-mix(in srgb, var(--cream) 84%, transparent); }
+.q--bg .q__steps li {
+  color: var(--cream);
+  background: color-mix(in srgb, var(--cream) 10%, transparent);
+  border-color: color-mix(in srgb, var(--cream) 22%, transparent);
+}
+.q--bg .q__quote {
+  color: var(--cream);
+  background: color-mix(in srgb, var(--cream) 10%, transparent);
 }
 
 /* ============================================================
@@ -525,24 +572,25 @@ a { color: inherit; }
 .cta__bg {
   position: absolute;
   inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center 62%;
-  opacity: .22;
 }
 .cta::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--ink) 72%, transparent),
-    color-mix(in srgb, var(--ink) 88%, transparent)
+    color-mix(in srgb, var(--ink) 80%, transparent),
+    color-mix(in srgb, var(--ink) 92%, transparent)
   );
 }
 
-.cta__inner { position: relative; max-width: 38rem; }
+.cta__inner { position: relative; z-index: 2; max-width: 38rem; }
 
 .cta__title {
   font-size: clamp(2rem, 5.5vw, 3rem);
@@ -696,7 +744,11 @@ a { color: inherit; }
 
   /* En papel no hay dos columnas ni sangrado: la foto va debajo del
      texto, apaisada y contenida dentro de la tarjeta. */
-  .q.q--photo, .who.who--photo { padding: 12mm !important; min-height: 265mm; align-items: center; }
+  .q.q--split, .who.who--split { padding: 12mm !important; min-height: 265mm; align-items: center; }
+  /* Las de fondo completo sí lo conservan: en A4 se leen como una
+     página oscura, igual que el cierre. */
+  .q.q--bg { padding: 12mm !important; min-height: 265mm; }
+  .q--bg::before { background: color-mix(in srgb, var(--ink) 86%, transparent); }
   .split { grid-template-columns: 1fr !important; gap: 7mm; }
   .split > :not(.photo) {
     max-width: none;

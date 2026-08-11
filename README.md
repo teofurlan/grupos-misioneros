@@ -73,10 +73,10 @@ misioneros distintos, para que no se vea todo del mismo lugar:
 | Archivo | Sección | Qué se ve |
 | --- | --- | --- |
 | `quienes.webp` | Quiénes somos | El grupo caminando por el barrio, de espaldas |
-| `actividades.webp` | 01 · Actividades del sábado | Los chicos sentados escuchando |
+| `actividades.webp` | 01 · Actividades del sábado *(fondo)* | Los chicos sentados escuchando |
 | `organizacion.webp` | 02 · Cómo nos organizamos | Adultos y chicos trabajando juntos, desde arriba |
 | `motivacion.webp` | 04 · Motivación | Muchos chicos dibujando sobre mantas |
-| `grupo.webp` | 05 · Organización del grupo | Ronda de chicas alrededor de una hoja |
+| `grupo.webp` | 05 · Organización del grupo *(fondo)* | Ronda de chicas alrededor de una hoja |
 | `logistica.webp` | 09 · Logística | Manualidades terminadas, sin personas |
 | `impacto.webp` | 10 · Impacto | El grupo reunido en el patio |
 | `cierre.webp` | Cierre | Un chico pegando el cartel «Jesus loves me» |
@@ -85,9 +85,17 @@ Las secciones 03, 06, 07 y 08 van sin foto a propósito: dan respiro y evitan qu
 recurso se agote. La 08 (familias) es la primera candidata cuando haya fotos de
 talleres con padres.
 
-**Encuadre:** las fotos son verticales y en mobile se recortan a una franja apaisada,
-donde el centro geométrico no siempre es el motivo. Cada una tiene su `object-position`
-en `styles.css` (buscar `#quienes .photo img`). Al cambiar una foto, revisar ese valor.
+**Dos tratamientos**, alternados para que no se vuelva repetitivo:
+
+- `.q--split` — la foto ocupa un lateral a sangre, con corte limpio. El ancho lo define
+  `--photo-col` por sección (van de 32% a 46%) y el lado alterna con `.split--reverse`.
+- `.q--bg` — la foto ocupa el fondo completo con un velo azul encima y el texto en
+  claro. Se usa en 01, 05 y el cierre: funcionan como puntuación visual.
+
+**Encuadre:** las fotos son verticales y se recortan (franja apaisada en mobile,
+columna angosta en escritorio), donde el centro geométrico no siempre es el motivo.
+Cada una tiene su `object-position` en `styles.css` (buscar `#quienes .photo img`).
+Al cambiar una foto, revisar ese valor.
 
 Para reemplazarlas: se recortan las barras negras de los screenshots, se redimensionan
 a 1300 px de lado largo y se guardan como WebP calidad ~66. Los originales sin
