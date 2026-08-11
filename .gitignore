@@ -13,3 +13,6 @@ desktop.ini
 
 # Capturas de trabajo
 .preview/
+
+.vercel
+.env*

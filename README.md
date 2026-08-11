@@ -66,21 +66,32 @@ Deben ser imágenes donde **no se identifique a ningún niño** (de espaldas, ma
 trabajando, detalles de las manualidades) — mismo criterio que ya se usa para las
 redes del grupo.
 
-Las que están puestas hoy, en `assets/fotos/` (WebP, ~700 KB en total, todas con
-`loading="lazy"` para que no pesen en la carga inicial):
+Las ocho que están puestas hoy, en `assets/fotos/` (WebP, ~1 MB en total, todas con
+`loading="lazy"` para que no pesen en la carga inicial). Hay material de dos grupos
+misioneros distintos, para que no se vea todo del mismo lugar:
 
 | Archivo | Sección | Qué se ve |
 | --- | --- | --- |
 | `quienes.webp` | Quiénes somos | El grupo caminando por el barrio, de espaldas |
-| `actividades.webp` | 01 · Actividades del sábado | Los chicos sentados escuchando, de espaldas |
-| `motivacion.webp` | 04 · Motivación | Actividad en el piso, tomada desde arriba |
+| `actividades.webp` | 01 · Actividades del sábado | Los chicos sentados escuchando |
+| `organizacion.webp` | 02 · Cómo nos organizamos | Adultos y chicos trabajando juntos, desde arriba |
+| `motivacion.webp` | 04 · Motivación | Muchos chicos dibujando sobre mantas |
+| `grupo.webp` | 05 · Organización del grupo | Ronda de chicas alrededor de una hoja |
 | `logistica.webp` | 09 · Logística | Manualidades terminadas, sin personas |
-| `impacto.webp` | 10 · Impacto | El grupo reunido en el patio, de espaldas |
-| `cierre.webp` | Cierre | Un chico de espaldas pegando el cartel «Jesus loves me» |
+| `impacto.webp` | 10 · Impacto | El grupo reunido en el patio |
+| `cierre.webp` | Cierre | Un chico pegando el cartel «Jesus loves me» |
 
-Para reemplazarlas, pasar los originales y reprocesar: se recortan las barras negras
-de los screenshots, se redimensionan a 1100 px de lado largo y se guardan como WebP
-calidad ~74. Los originales sin comprimir, mínimo 1600 px de lado largo.
+Las secciones 03, 06, 07 y 08 van sin foto a propósito: dan respiro y evitan que el
+recurso se agote. La 08 (familias) es la primera candidata cuando haya fotos de
+talleres con padres.
+
+**Encuadre:** las fotos son verticales y en mobile se recortan a una franja apaisada,
+donde el centro geométrico no siempre es el motivo. Cada una tiene su `object-position`
+en `styles.css` (buscar `#quienes .photo img`). Al cambiar una foto, revisar ese valor.
+
+Para reemplazarlas: se recortan las barras negras de los screenshots, se redimensionan
+a 1300 px de lado largo y se guardan como WebP calidad ~66. Los originales sin
+comprimir, mínimo 1600 px de lado largo.
 
 ## Pendientes antes de publicar
 

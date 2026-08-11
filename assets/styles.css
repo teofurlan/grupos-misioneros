@@ -26,6 +26,10 @@
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
   --font-body: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
+  /* Color de fondo de la sección actual: lo usan los degradados que
+     funden las fotos con el fondo. Cada sección lo redefine. */
+  --section-bg: var(--cream);
+
   --ease: cubic-bezier(.22, .61, .36, 1);
 }
 
@@ -282,6 +286,7 @@ a { color: inherit; }
 .who {
   padding: clamp(4rem, 10vw, 7rem) var(--pad);
   background: var(--cream-2);
+  --section-bg: var(--cream-2);
 }
 .who__inner { max-width: var(--maxw); margin-inline: auto; }
 .who__title {
@@ -298,19 +303,20 @@ a { color: inherit; }
    no se identifica a ningún niño. Ver README antes de cambiarlas.
    ============================================================ */
 
-.split {
-  display: grid;
-  gap: clamp(1.6rem, 4vw, 3.2rem);
-  align-items: center;
-}
+/* Las fotos van a sangre (pegadas al borde de la pantalla), no dentro
+   de una tarjeta: media pantalla en escritorio, una franja arriba en
+   mobile. En los dos casos el borde interno se funde con el fondo de
+   la sección mediante un degradado, para que no quede un corte duro.
+   `--section-bg` existe para que ese degradado sepa con qué color
+   fundirse, que cambia según la sección. */
+
+.split { display: grid; }
 
 .photo {
+  position: relative;
   margin: 0;
-  aspect-ratio: 16 / 11;
-  border-radius: 1.1rem;
   overflow: hidden;
   background: color-mix(in srgb, var(--ink) 8%, transparent);
-  box-shadow: 0 16px 36px -18px color-mix(in srgb, var(--ink) 55%, transparent);
 }
 .photo img {
   width: 100%;
@@ -319,14 +325,78 @@ a { color: inherit; }
   display: block;
 }
 
-/* En pantallas anchas el texto y la foto van lado a lado. */
-@media (min-width: 60rem) {
-  .who--photo .who__inner,
-  .q--photo .q__inner { max-width: 68rem; }
+/* Encuadre por foto. Son verticales y al recortarlas en una franja
+   apaisada (mobile) el centro geométrico no siempre es el motivo:
+   en varias, los chicos están en la mitad de abajo y con el recorte
+   por defecto quedaba solo cielo. */
+#quienes .photo img { object-position: center 80%; }
+#q1  .photo img { object-position: center 64%; }
+#q2  .photo img { object-position: center 45%; }
+#q4  .photo img { object-position: center 45%; }
+#q5  .photo img { object-position: center 42%; }
+#q9  .photo img { object-position: center 50%; }
+#q10 .photo img { object-position: center 68%; }
+/* El degradado que disuelve la unión foto/fondo. */
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
 
-  .split { grid-template-columns: 1.08fr .92fr; }
+/* --- Mobile: franja a sangre arriba, texto debajo --- */
+@media (max-width: 59.999rem) {
+  .q.q--photo, .who.who--photo { padding-top: 0; }
+
+  .split { gap: 2rem; }
+  .split > .photo {
+    order: -1;
+    height: 42svh;
+    min-height: 15rem;
+    margin-inline: calc(var(--pad) * -1);
+  }
+  .split > .photo::after {
+    background: linear-gradient(to bottom, transparent 45%, var(--section-bg) 100%);
+  }
+}
+
+/* --- Escritorio: media pantalla --- */
+@media (min-width: 60rem) {
+  .q.q--photo, .who.who--photo {
+    padding-inline: 0;
+    padding-block: 0;
+    min-height: 100svh;
+    /* `.q` centra su contenido; acá el grid tiene que estirarse hasta
+       los bordes de la sección o la foto no llega arriba ni abajo. */
+    align-items: stretch;
+  }
+  .q--photo .q__inner,
+  .who--photo .who__inner {
+    max-width: none;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    min-height: 100svh;
+  }
+
+  /* La columna de texto: centrada verticalmente y con un ancho de
+     lectura cómodo, pegada al centro de la pantalla. */
+  .split > :not(.photo) {
+    align-self: center;
+    max-width: 40rem;
+    padding: 5rem var(--pad);
+    margin-left: auto;
+  }
+  .split--reverse > :not(.photo) { margin-left: 0; margin-right: auto; }
+
+  .split > .photo { height: 100%; }
+  .split > .photo::after {
+    background: linear-gradient(to right, var(--section-bg) 0%, transparent 26%);
+  }
+  /* Con la foto a la izquierda el degradado va del otro lado. */
   .split--reverse > .photo { order: -1; }
-  .photo { aspect-ratio: 3 / 4; }
+  .split--reverse > .photo::after {
+    background: linear-gradient(to left, var(--section-bg) 0%, transparent 26%);
+  }
 
   /* En la columna angosta, 4 ítems entran mejor en 2×2 que en 3+1. */
   .q--photo .q__steps { grid-template-columns: repeat(2, 1fr); }
@@ -343,7 +413,7 @@ a { color: inherit; }
   padding: clamp(5rem, 12vw, 7rem) var(--pad);
   border-top: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
 }
-.q--alt { background: var(--cream-2); }
+.q--alt { background: var(--cream-2); --section-bg: var(--cream-2); }
 
 .q__inner { max-width: var(--maxw); margin-inline: auto; width: 100%; }
 
@@ -624,10 +694,25 @@ a { color: inherit; }
   .q__lead  { font-size: 12.5pt; }
   .q__steps { break-inside: avoid; }
 
-  /* En papel no hay dos columnas: la foto va debajo del texto, apaisada. */
+  /* En papel no hay dos columnas ni sangrado: la foto va debajo del
+     texto, apaisada y contenida dentro de la tarjeta. */
+  .q.q--photo, .who.who--photo { padding: 12mm !important; min-height: 265mm; align-items: center; }
   .split { grid-template-columns: 1fr !important; gap: 7mm; }
-  .split--reverse > .photo { order: 0; }
-  .photo { aspect-ratio: auto; height: 62mm; box-shadow: none; }
+  .split > :not(.photo) {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    order: 0;
+  }
+  .split > .photo,
+  .split--reverse > .photo {
+    order: 1;
+    height: 62mm;
+    min-height: 0;
+    margin-inline: 0;
+    border-radius: 3mm;
+  }
+  .photo::after { display: none; }
 
   /* Los enlaces del cierre no sirven en papel; queda el texto. */
   .cta__actions { display: none; }
