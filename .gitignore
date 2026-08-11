@@ -10,3 +10,6 @@ desktop.ini
 
 # Deploy
 .vercel
+
+# Capturas de trabajo
+.preview/

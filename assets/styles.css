@@ -4,19 +4,21 @@
    ============================================================ */
 
 :root {
-  /* Paleta: cálida y cercana, pero legible para un lector adulto. */
-  --cream:      #FDF9F3;
-  --cream-2:    #F6EDE0;
-  --ink:        #2A2018;
-  --ink-soft:   #6B5B4C;
-  --terracotta: #C4593A;
-  --amber:      #E3A03C;
-  --sage:       #5B7F63;
+  /* Paleta tomada del material del congreso I Will Go:
+     azul marino, dorado y fondo pergamino, con el celeste del cielo
+     como acento secundario. */
+  --cream:      #F4ECDB;  /* pergamino, fondo principal */
+  --cream-2:    #EBE0C8;  /* pergamino más tostado, secciones alternas */
+  --ink:        #1D3B60;  /* azul marino IWG, texto principal */
+  --ink-soft:   #445D7C;  /* azul desaturado, texto de cuerpo */
+  --terracotta: #B8871F;  /* dorado oscuro, acentos y numeración */
+  --amber:      #C6952F;  /* dorado IWG */
+  --sage:       #6C8FA6;  /* celeste apagado */
 
-  /* Sección 03 (menores): paleta sobria a propósito. */
-  --slate:      #33424D;
-  --slate-bg:   #EAF0F2;
-  --slate-soft: #5B6B76;
+  /* Sección 03 (menores): panel frío, sin calidez, a propósito. */
+  --slate:      #1D3B60;
+  --slate-bg:   #DCE7EE;
+  --slate-soft: #46617F;
 
   --maxw: 46rem;
   --pad: clamp(1.25rem, 5vw, 3rem);
@@ -53,6 +55,22 @@ h1, h2 {
   letter-spacing: -.015em;
   margin: 0;
   text-wrap: balance;
+  /* Los títulos son preguntas largas: en pantallas angostas tienen
+     que poder cortar antes que desbordar. */
+  overflow-wrap: break-word;
+}
+
+/* Grano tenue sobre toda la página: le da la textura de impreso
+   que tiene el material gráfico del congreso. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: .05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 p { margin: 0 0 1.1em; }
@@ -410,7 +428,7 @@ a { color: inherit; }
   display: grid;
   place-items: center;
   padding: clamp(5rem, 12vw, 8rem) var(--pad);
-  background: var(--terracotta);
+  background: var(--ink);
   color: var(--cream);
   overflow: hidden;
   text-align: center;
@@ -446,7 +464,8 @@ a { color: inherit; }
   transition: transform .2s var(--ease), background .2s var(--ease);
 }
 .btn:hover { transform: translateY(-2px); }
-.btn--primary { background: var(--cream); color: var(--terracotta); }
+.btn--primary { background: var(--amber); color: #14294A; }
+.btn--primary:hover { background: #D9AC4A; }
 .btn--ghost   { border-color: color-mix(in srgb, var(--cream) 55%, transparent); color: var(--cream); }
 .btn--ghost:hover { background: color-mix(in srgb, var(--cream) 14%, transparent); }
 
@@ -508,9 +527,69 @@ a { color: inherit; }
   .reveal { opacity: 1; transform: none; }
 }
 
-@media print {
-  .progress, .topbar, .hero__scroll, .footer__top, .deco { display: none !important; }
-  .q, .hero { min-height: auto; page-break-inside: avoid; }
-  .reveal { opacity: 1; transform: none; }
-  body { background: #fff; }
+/* ============================================================
+   Impresión / exportar a PDF
+
+   El PDF del material se genera imprimiendo esta misma página
+   (Ctrl+P → "Guardar como PDF"), así el documento conserva el
+   diseño en vez de ser un Word suelto. Una pregunta por hoja.
+   ============================================================ */
+
+@page {
+  size: A4;
+  margin: 14mm;
 }
+
+@media print {
+  /* Sin esto los navegadores descartan fondos y colores al imprimir. */
+  html, body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background: var(--cream);
+    font-size: 10.5pt;
+  }
+
+  /* El pie se oculta: si no, se lleva una hoja entera para sí solo.
+     La referencia a la web va en la última tarjeta (.print-url). */
+  .progress, .topbar, .hero__scroll, .footer, .deco, body::after {
+    display: none !important;
+  }
+
+  .reveal { opacity: 1 !important; transform: none !important; }
+
+  /* Cada sección pasa de ocupar una pantalla a ocupar una hoja:
+     el bloque de color llena la página y el texto va centrado,
+     así el PDF se lee como el mazo de tarjetas de la web. */
+  .hero, .who, .q, .cta {
+    display: flex;
+    align-items: center;
+    /* A4 (297mm) menos los márgenes de @page (14mm x2) = 269mm útiles. */
+    min-height: 265mm;
+    padding: 12mm;
+    border: 0;
+    border-radius: 4mm;
+    break-inside: avoid;
+  }
+  .hero__inner, .who__inner, .q__inner, .cta__inner {
+    width: 100%;
+    max-width: none;
+  }
+
+  .who, .q, .cta { break-before: page; }
+
+  .hero { text-align: center; }
+  .hero__title { font-size: 32pt; }
+  .hero__intro { font-size: 12pt; }
+
+  .q__title { font-size: 19pt; }
+  .q__lead  { font-size: 12.5pt; }
+  .q__steps { break-inside: avoid; }
+
+  /* Los enlaces del cierre no sirven en papel; queda el texto. */
+  .cta__actions { display: none; }
+
+  .print-url { display: block !important; }
+}
+
+/* Referencia a la web, visible solo en el PDF/impreso. */
+.print-url { display: none; }
