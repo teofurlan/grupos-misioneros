@@ -349,13 +349,13 @@ a { color: inherit; }
    apaisada en mobile, en columna angosta en escritorio) el centro
    geométrico no siempre es el motivo: en varias, los chicos están
    en la mitad de abajo y por defecto quedaba solo cielo. */
-#quienes .photo img { object-position: center 80%; }
-#q1  .q__bg         { object-position: center 62%; }
+#quienes .photo img { object-position: 55% 40%; }
+#q1  .q__bg         { object-position: center 76%; }
 #q2  .photo img     { object-position: center 45%; }
 #q4  .photo img     { object-position: center 45%; }
 #q5  .q__bg         { object-position: center 45%; }
 #q9  .photo img     { object-position: center 50%; }
-#q10 .photo img     { object-position: center 68%; }
+#q10 .photo img     { object-position: center 45%; }
 
 /* ---------- Variante A: foto en un lateral ---------- */
 

@@ -72,13 +72,13 @@ misioneros distintos, para que no se vea todo del mismo lugar:
 
 | Archivo | Sección | Qué se ve |
 | --- | --- | --- |
-| `quienes.webp` | Quiénes somos | El grupo caminando por el barrio, de espaldas |
-| `actividades.webp` | 01 · Actividades del sábado *(fondo)* | Los chicos sentados escuchando |
+| `quienes.webp` | Quiénes somos | Chicos y líderes jugando en el patio, de espaldas |
+| `actividades.webp` | 01 · Actividades del sábado *(fondo)* | Los chicos sentados en el pasto, todos de espaldas |
 | `organizacion.webp` | 02 · Cómo nos organizamos | Adultos y chicos trabajando juntos, desde arriba |
 | `motivacion.webp` | 04 · Motivación | Muchos chicos dibujando sobre mantas |
 | `grupo.webp` | 05 · Organización del grupo *(fondo)* | Ronda de chicas alrededor de una hoja |
 | `logistica.webp` | 09 · Logística | Manualidades terminadas, sin personas |
-| `impacto.webp` | 10 · Impacto | El grupo reunido en el patio |
+| `impacto.webp` | 10 · Impacto | Chicos en una manualidad, desde arriba (recortada) |
 | `cierre.webp` | Cierre | Un chico pegando el cartel «Jesus loves me» |
 
 Las secciones 03, 06, 07 y 08 van sin foto a propósito: dan respiro y evitan que el
@@ -97,15 +97,17 @@ columna angosta en escritorio), donde el centro geométrico no siempre es el mot
 Cada una tiene su `object-position` en `styles.css` (buscar `#quienes .photo img`).
 Al cambiar una foto, revisar ese valor.
 
-Para reemplazarlas: se recortan las barras negras de los screenshots, se redimensionan
-a 1300 px de lado largo y se guardan como WebP calidad ~66. Los originales sin
-comprimir, mínimo 1600 px de lado largo.
+Para reemplazarlas: se redimensionan a ~1300 px de lado largo y se guardan como WebP
+calidad 58-72 (según cuánto detalle fino tenga la foto). Los originales sin comprimir.
+
+Si la foto es un **screenshot de teléfono**, hay que sacarle las barras negras. Ojo con
+detectarlas por el promedio de brillo de cada fila: la barrita clara del home queda
+*sobre* la barra negra y sube el promedio, así que el recorte se detiene antes y deja
+un borde negro (pasó en la 09). Conviene medir la **fracción de píxeles oscuros** de la
+fila (≥80% por debajo de 34) y descontar un par de píxeles de margen.
 
 ## Pendientes antes de publicar
 
-- [ ] **Número de WhatsApp** — en `index.html`, buscar `wa.me/NUMERO` y poner el número
-      real en formato internacional sin `+` ni espacios (ej. `5493434123456`).
-      Agregar también una línea `.print-url` con el número, para que salga en el PDF.
 - [ ] **Fotos definitivas** — las actuales son provisorias, a la espera de más material.
 - [ ] **Logos institucionales** (UAP / SVA / IWG) — decidir si van y con qué permiso.
 - [ ] **Fuentes** — hoy se cargan desde Google Fonts. Si se quiere cero dependencia
@@ -120,6 +122,12 @@ que un grupo de WhatsApp.
 Si se van a usar fotos reales, hay que confirmar que las autorizaciones existentes lo
 cubran. Alternativa segura: fotos donde los chicos no sean identificables (de espaldas,
 manos trabajando, detalles de las manualidades) o ilustraciones.
+
+## Contacto
+
+El botón del cierre apunta a `https://wa.me/5493434285941` con un mensaje
+prellenado. El número también va visible como texto, así aparece en el PDF
+(donde el enlace no sirve de nada).
 
 ## Deploy
 
