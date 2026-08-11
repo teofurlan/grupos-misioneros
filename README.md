@@ -142,23 +142,55 @@ cada push a `main` publica solo. El subdominio gratuito es estable y no expira.
 
 ## El QR
 
-Generado en `assets/qr/`, **estático**: la URL va codificada dentro del patrón, sin
-servicio intermedio, así que no puede caducar.
+Se genera con `scripts/generar-qr.py`, que además **verifica** lo que produce
+(decodifica el resultado y lo prueba a tamaños chicos y desenfocado):
 
-| Archivo | Para qué |
-| --- | --- |
-| `qr-grupos-misioneros.svg` | El que va a la imprenta (vectorial, escala sin pixelarse) |
-| `qr-grupos-misioneros.png` | 2000×2000 px, por si el diseñador no puede usar SVG |
+```bash
+python scripts/generar-qr.py                                          # liso
+python scripts/generar-qr.py --estilo iwg --logo assets/qr/logo-iwg-globo.png
+```
 
-Versión 3 (29×29 módulos), corrección de errores M (~15%), con la zona muda de 4
-módulos incluida. Verificado decodificando el archivo: devuelve
-`https://grupos-misioneros.vercel.app`. Lee bien hasta 90 px de lado, nítido y
-desenfocado.
+| Archivo | Qué es | Mínimo impreso |
+| --- | --- | --- |
+| `qr-iwg.svg` / `.png` | **El recomendado.** Azul IWG, módulos redondeados, globo del logo al centro | 2,5 × 2,5 cm |
+| `qr-grupos-misioneros.svg` / `.png` | Liso, negro. Menos denso, el más tolerante | 2 × 2 cm |
+| `qr-iwg-logo-completo.svg` / `.png` | Con el lockup completo. **No usar en tarjeta**: a ese tamaño el texto es una manchita | — |
 
-Al imprimir: **no recortar el margen blanco**, mínimo 2×2 cm en la tarjeta, oscuro
-sobre claro, y escanear una prueba impresa con varios teléfonos antes de la tirada.
+`logo-iwg-globo.png` es el globo extraído de `IWG.png`, umbralado para sacarle
+la trama de puntitos del fondo y la textura de la tinta, que a 5 mm sólo son
+suciedad. El logo completo se conserva en `logo-iwg-completo.png`.
 
-Si cambia la URL, hay que regenerar el QR — y las tarjetas ya impresas quedan muertas.
+Los tres son **estáticos**: la URL va codificada dentro del patrón, sin servicio
+intermedio, así que no pueden caducar. Si la URL cambia hay que regenerarlos, y
+las tarjetas ya impresas dejan de servir.
+
+### Tres trampas, todas invisibles a ojo
+
+Están documentadas en el script porque cada una produjo un QR que se veía
+perfecto y no se podía leer:
+
+1. **No reescalar.** Generar chico y agrandar con LANCZOS deja halos en los
+   bordes que rompen la decodificación. El tamaño se controla con `U` (px por
+   módulo) para que salga grande de entrada.
+2. **El radio de las esquinas tiene techo.** Con módulos casi circulares
+   (radio ≥ 0,42 del lado) los vecinos se tocan en un punto, el antialiasing se
+   come la unión y se pierde la grilla. Medido rasterizando el SVG en el
+   navegador: 0,42 no lee nunca, 0,32 sólo en grande, 0,25 siempre. Se usa 0,22.
+3. **En el SVG hay que fusionar los módulos contiguos de cada fila** en un solo
+   rect, con un solape mínimo. Un rect por módulo deja costuras claras entre
+   vecinos al rasterizar a tamaños no enteros.
+
+El logo tapa módulos, y eso funciona sólo por la corrección de errores nivel H
+(~30%). El costo es que el código pasa de versión 3 a 5 (37×37 módulos en vez
+de 29×29), o sea más denso, o sea que pide más tamaño impreso — de ahí los
+2,5 cm en vez de 2.
+
+### Al imprimir
+
+- **No recortar el margen blanco.** Es el error más común y deja el QR ilegible.
+- Oscuro sobre claro, nunca invertido.
+- Poner también la URL en texto, para quien no pueda escanear.
+- Imprimir una prueba y escanearla con varios teléfonos antes de la tirada.
 
 ## Accesibilidad
 
