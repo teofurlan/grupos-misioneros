@@ -100,11 +100,17 @@ Al cambiar una foto, revisar ese valor.
 Para reemplazarlas: se redimensionan a ~1300 px de lado largo y se guardan como WebP
 calidad 58-72 (según cuánto detalle fino tenga la foto). Los originales sin comprimir.
 
-Si la foto es un **screenshot de teléfono**, hay que sacarle las barras negras. Ojo con
-detectarlas por el promedio de brillo de cada fila: la barrita clara del home queda
-*sobre* la barra negra y sube el promedio, así que el recorte se detiene antes y deja
-un borde negro (pasó en la 09). Conviene medir la **fracción de píxeles oscuros** de la
-fila (≥80% por debajo de 34) y descontar un par de píxeles de margen.
+Si la foto es un **screenshot de teléfono**, hay que sacarle las barras negras, y no
+alcanza con escanear hacia adentro desde el borde: la barrita clara del home del
+teléfono queda *por debajo* de la banda negra, así que el escaneo se detiene en la
+primera fila clara y deja la banda entera adentro (esto dejó un borde negro en la 09
+durante dos intentos). El método que sí funciona: marcar cada fila como oscura o no
+(≥75% de píxeles por debajo de 40) y quedarse con la **racha contigua de filas no
+oscuras más larga**, sin importar qué haya en los bordes.
+
+Para verificar, no mirar solo la última fila: hay que recorrer hacia adentro desde
+cada borde contando filas/columnas oscuras. Con esa comprobación las ocho fotos dan
+cero en los cuatro bordes.
 
 ## Pendientes antes de publicar
 
@@ -134,9 +140,25 @@ prellenado. El número también va visible como texto, así aparece en el PDF
 Publicado en **https://grupos-misioneros.vercel.app** — Vercel conectado a este repo:
 cada push a `main` publica solo. El subdominio gratuito es estable y no expira.
 
-**El QR de las tarjetas debe ser estático** — la URL va codificada dentro del patrón,
-así no depende de ningún servicio que pueda caducar. Se genera una vez que la URL
-esté definida y no se vuelve a tocar.
+## El QR
+
+Generado en `assets/qr/`, **estático**: la URL va codificada dentro del patrón, sin
+servicio intermedio, así que no puede caducar.
+
+| Archivo | Para qué |
+| --- | --- |
+| `qr-grupos-misioneros.svg` | El que va a la imprenta (vectorial, escala sin pixelarse) |
+| `qr-grupos-misioneros.png` | 2000×2000 px, por si el diseñador no puede usar SVG |
+
+Versión 3 (29×29 módulos), corrección de errores M (~15%), con la zona muda de 4
+módulos incluida. Verificado decodificando el archivo: devuelve
+`https://grupos-misioneros.vercel.app`. Lee bien hasta 90 px de lado, nítido y
+desenfocado.
+
+Al imprimir: **no recortar el margen blanco**, mínimo 2×2 cm en la tarjeta, oscuro
+sobre claro, y escanear una prueba impresa con varios teléfonos antes de la tirada.
+
+Si cambia la URL, hay que regenerar el QR — y las tarjetas ya impresas quedan muertas.
 
 ## Accesibilidad
 
