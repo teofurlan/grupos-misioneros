@@ -66,31 +66,28 @@ Deben ser imágenes donde **no se identifique a ningún niño** (de espaldas, ma
 trabajando, detalles de las manualidades) — mismo criterio que ya se usa para las
 redes del grupo.
 
-Ideal: **5 o 6 fotos**, una por bloque:
+Las que están puestas hoy, en `assets/fotos/` (WebP, ~700 KB en total, todas con
+`loading="lazy"` para que no pesen en la carga inicial):
 
-| Sección | Qué mostraría |
-| --- | --- |
-| Quiénes somos | El equipo trabajando |
-| 01 · Actividades del sábado | Un momento del programa (cantos o historia) |
-| 04 · Motivación | Chicos en una manualidad o juego |
-| 09 · Logística | La merienda, materiales reciclados |
-| 10 · Impacto | Una escena grupal amplia |
-| Cierre | Una foto abierta, de contexto |
+| Archivo | Sección | Qué se ve |
+| --- | --- | --- |
+| `quienes.webp` | Quiénes somos | El grupo caminando por el barrio, de espaldas |
+| `actividades.webp` | 01 · Actividades del sábado | Los chicos sentados escuchando, de espaldas |
+| `motivacion.webp` | 04 · Motivación | Actividad en el piso, tomada desde arriba |
+| `logistica.webp` | 09 · Logística | Manualidades terminadas, sin personas |
+| `impacto.webp` | 10 · Impacto | El grupo reunido en el patio, de espaldas |
+| `cierre.webp` | Cierre | Un chico de espaldas pegando el cartel «Jesus loves me» |
 
-Formato: horizontales, mínimo 1600 px de ancho, sin comprimir ni recortar
-(se optimizan acá y se convierten a WebP).
+Para reemplazarlas, pasar los originales y reprocesar: se recortan las barras negras
+de los screenshots, se redimensionan a 1100 px de lado largo y se guardan como WebP
+calidad ~74. Los originales sin comprimir, mínimo 1600 px de lado largo.
 
 ## Pendientes antes de publicar
 
 - [ ] **Número de WhatsApp** — en `index.html`, buscar `wa.me/NUMERO` y poner el número
       real en formato internacional sin `+` ni espacios (ej. `5493434123456`).
       Agregar también una línea `.print-url` con el número, para que salga en el PDF.
-- [ ] **Fotos** — ver arriba.
-- [ ] **URL real** — una vez publicado, reemplazar `grupos-misioneros.vercel.app` en el
-      bloque `.print-url` de `index.html` y regenerar el PDF.
-- [ ] **Datos del bloque "Quiénes somos"** — hoy son datos sacados del propio material
-      (`10 preguntas` / `4 momentos por sábado` / `$0 de costo`). Se pueden cambiar por
-      cuántos grupos participan y desde cuándo.
+- [ ] **Fotos definitivas** — las actuales son provisorias, a la espera de más material.
 - [ ] **Logos institucionales** (UAP / SVA / IWG) — decidir si van y con qué permiso.
 - [ ] **Fuentes** — hoy se cargan desde Google Fonts. Si se quiere cero dependencia
       externa, se pueden autohospedar en `assets/fonts/`.
@@ -107,8 +104,8 @@ manos trabajando, detalles de las manualidades) o ilustraciones.
 
 ## Deploy
 
-Pensado para Vercel conectado a este repo: cada push a `main` publica solo.
-El subdominio gratuito (`*.vercel.app`) es estable y no expira.
+Publicado en **https://grupos-misioneros.vercel.app** — Vercel conectado a este repo:
+cada push a `main` publica solo. El subdominio gratuito es estable y no expira.
 
 **El QR de las tarjetas debe ser estático** — la URL va codificada dentro del patrón,
 así no depende de ningún servicio que pueda caducar. Se genera una vez que la URL

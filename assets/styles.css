@@ -291,28 +291,45 @@ a { color: inherit; }
 .who__text { color: var(--ink-soft); }
 .who__text strong { color: var(--ink); }
 
-.who__stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem;
-  list-style: none;
-  margin: 2.5rem 0 0;
-  padding: 1.6rem 0 0;
-  border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+/* ============================================================
+   Fotos
+
+   Todas las imágenes son de espaldas, cenitales o a distancia:
+   no se identifica a ningún niño. Ver README antes de cambiarlas.
+   ============================================================ */
+
+.split {
+  display: grid;
+  gap: clamp(1.6rem, 4vw, 3.2rem);
+  align-items: center;
 }
-.who__stats li { display: flex; flex-direction: column; }
-.who__stats b {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  line-height: 1;
-  color: var(--terracotta);
+
+.photo {
+  margin: 0;
+  aspect-ratio: 16 / 11;
+  border-radius: 1.1rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  box-shadow: 0 16px 36px -18px color-mix(in srgb, var(--ink) 55%, transparent);
 }
-.who__stats span {
-  font-size: .82rem;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-top: .35rem;
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* En pantallas anchas el texto y la foto van lado a lado. */
+@media (min-width: 60rem) {
+  .who--photo .who__inner,
+  .q--photo .q__inner { max-width: 68rem; }
+
+  .split { grid-template-columns: 1.08fr .92fr; }
+  .split--reverse > .photo { order: -1; }
+  .photo { aspect-ratio: 3 / 4; }
+
+  /* En la columna angosta, 4 ítems entran mejor en 2×2 que en 3+1. */
+  .q--photo .q__steps { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ============================================================
@@ -433,6 +450,28 @@ a { color: inherit; }
   overflow: hidden;
   text-align: center;
 }
+/* Foto de fondo del cierre, bajo una capa azul que garantiza
+   que el texto siga siendo legible por encima. */
+.cta__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 62%;
+  opacity: .22;
+}
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ink) 72%, transparent),
+    color-mix(in srgb, var(--ink) 88%, transparent)
+  );
+}
+
 .cta__inner { position: relative; max-width: 38rem; }
 
 .cta__title {
@@ -584,6 +623,11 @@ a { color: inherit; }
   .q__title { font-size: 19pt; }
   .q__lead  { font-size: 12.5pt; }
   .q__steps { break-inside: avoid; }
+
+  /* En papel no hay dos columnas: la foto va debajo del texto, apaisada. */
+  .split { grid-template-columns: 1fr !important; gap: 7mm; }
+  .split--reverse > .photo { order: 0; }
+  .photo { aspect-ratio: auto; height: 62mm; box-shadow: none; }
 
   /* Los enlaces del cierre no sirven en papel; queda el texto. */
   .cta__actions { display: none; }
